@@ -7,32 +7,15 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  build-and-scan:
-    name: Build & Scan
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout du code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # ==========================================
-      # 1. Build du Backend
-      # ==========================================
-      - name: Build de l'image Backend
+      - name: Build Backend
         run: docker build -t taskboard-backend:latest -f Dockerfile.backend .
 
-      # ==========================================
-      # 2. Build du Frontend
-      # ==========================================
-      - name: Build de l'image Frontend
+      - name: Build Frontend
         run: docker build -t taskboard-frontend:latest -f Dockerfile.frontend .
-
-      # ==========================================
-      # 3. Tests (Exemple de placeholder)
-      # ==========================================
-      - name: Exécuter les tests Backend
-        run: echo "Ici, on lance les tests (ex: npm test, pytest, etc.)"
-        
-      - name: Exécuter les tests Frontend
-        run: echo "Ici, on lance les tests (ex: npm test, jest, etc.)"
-
