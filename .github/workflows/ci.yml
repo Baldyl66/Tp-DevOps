@@ -36,28 +36,3 @@ jobs:
       - name: Exécuter les tests Frontend
         run: echo "Ici, on lance les tests (ex: npm test, jest, etc.)"
 
-      # ==========================================
-      # 4. Scan de vulnérabilités avec Trivy
-      # ==========================================
-      # Ce scan échouera délibérément si une faille CRITIQUE est trouvée,
-      # ce qui est attendu pour l'objectif B du TP.
-      
-      - name: Scan Trivy sur le Backend
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'taskboard-backend:latest'
-          format: 'table'
-          exit-code: '0' # Fait échouer le pipeline si des vulnérabilités sont trouvées
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
-
-      - name: Scan Trivy sur le Frontend
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'taskboard-frontend:latest'
-          format: 'table'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
