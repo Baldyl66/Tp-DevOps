@@ -1,0 +1,13 @@
+# Image de base
+FROM postgres:16-alpine
+
+# Définition des variables d'environnement par défaut
+ENV POSTGRES_DB=taskboard
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+
+# Copie du script d'initialisation depuis le dossier database
+COPY database/init.sql /docker-entrypoint-initdb.d/
+
+# Exposition du port postgres
+EXPOSE 5432

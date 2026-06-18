@@ -1,0 +1,23 @@
+# Image de base
+FROM node:20-slim
+
+# Création du dossier de l'application
+WORKDIR /app
+
+# Copie de la configuration des packages depuis le dossier backend
+COPY backend/package*.json ./
+
+# Installation des dépendances de production uniquement
+RUN npm install --omit=dev
+
+# Copie du code source du backend
+COPY backend/ .
+
+# Utilisation d'un utilisateur non-root pour plus de sécurité
+USER node
+
+# Exposition du port du backend
+EXPOSE 3000
+
+# Démarrage de l'application
+CMD ["npm", "start"]

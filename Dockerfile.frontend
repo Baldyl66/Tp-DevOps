@@ -1,0 +1,11 @@
+# Image de base
+FROM nginx:alpine
+
+# Copie des fichiers statiques depuis le dossier frontend
+COPY frontend/ /usr/share/nginx/html
+
+# Exposition du port 80
+EXPOSE 80
+
+# Nginx démarre automatiquement
+CMD ["nginx", "-g", "daemon off;"]

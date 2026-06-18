@@ -1,0 +1,7 @@
+# Définit un espace de travail isolé pour le projet TaskBoard Lite.
+# Permet de regrouper les ressources et d'éviter les conflits de nommage avec d'autres services.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: taskboard

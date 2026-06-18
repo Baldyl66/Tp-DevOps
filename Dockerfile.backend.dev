@@ -1,0 +1,20 @@
+# Image de base (version complète pour les outils de dev)
+FROM node:20
+
+# Création du dossier de l'application
+WORKDIR /app
+
+# Copie de la configuration des packages
+COPY backend/package*.json ./
+
+# Installation de toutes les dépendances (incluant devDependencies)
+RUN npm install
+
+# Copie du code source
+COPY backend/ .
+
+# Exposition du port du backend
+EXPOSE 3000
+
+# Démarrage avec redémarrage automatique (hot-reload)
+CMD ["npm", "run", "dev"]

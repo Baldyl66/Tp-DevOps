@@ -1,0 +1,66 @@
+# Option 1 : Configuration de Production
+services:
+  # Service de base de données
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.database
+    container_name: taskboard-db
+    restart: always
+    environment:
+      - POSTGRES_DB=taskboard
+      - POSTGRES_USER=taskboard_user
+      - POSTGRES_PASSWORD=taskboard_password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskboard_user -d taskboard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service Backend (API)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend 
+    container_name: taskboard-backend
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=taskboard
+      - DB_USER=taskboard_user
+      - DB_PASSWORD=taskboard_password
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend-db
+      - public
+
+  # Service Frontend (Fichiers statiques)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: taskboard-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - public
+
+networks:
+  # Réseau privé pour la communication API <-> Base de données
+  backend-db:
+    internal: true
+  # Réseau pour l'accès externe (Frontend / Backend API)
+  public:
+
+volumes:
+  # Volume nommé pour la persistance des données PostgreSQL
+  db_data:

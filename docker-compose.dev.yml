@@ -1,0 +1,72 @@
+# Option 2 : Configuration de Développement (Live Reload)
+services:
+  # Base de données (Utilisation d'une image standard avec volumes pour l'initialisation)
+  db:
+    image: postgres:16-alpine
+    container_name: taskboard-db-dev
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Interface de gestion de base de données (Bonus Dev)
+  adminer:
+    image: adminer
+    container_name: taskboard-adminer
+    restart: always
+    ports:
+      - "8081:8080"
+    networks:
+      - dev-network
+
+  # Backend (Avec Hot-Reload et Montage de Volume)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.dev
+    container_name: taskboard-backend-dev
+    environment:
+      - PORT=${BACKEND_PORT}
+      - DB_HOST=db
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules # Impêche l'écrasement de node_modules par le volume hôte
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - dev-network
+
+  # Frontend (Servi par Nginx avec montage pour mises à jour instantanées)
+  frontend:
+    image: nginx:alpine
+    container_name: taskboard-frontend-dev
+    ports:
+      - "${FRONTEND_PORT}:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    networks:
+      - dev-network
+
+networks:
+  dev-network:
+
+volumes:
+  db_data_dev:

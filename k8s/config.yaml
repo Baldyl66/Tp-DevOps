@@ -1,0 +1,21 @@
+# Contient les données de configuration partagées (ConfigMap) et les secrets sensibles (Secret).
+# Le découplage ici permet de modifier les paramètres sans reconstruire l'image Docker.
+# Le mot de passe de la DB est encodé en base64 pour garantir une sécurité minimale au repos.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+  namespace: taskboard
+type: Opaque
+data:
+  password: dGFza2JvYXJkX3Bhc3N3b3Jk
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: taskboard
+data:
+  DB_HOST: "database-service"
+  DB_NAME: "taskboard"
+  DB_USER: "taskboard_user"
