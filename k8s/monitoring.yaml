@@ -1,3 +1,6 @@
+# ==========================================
+# 1. Configuration de Prometheus (Serveur et Règles)
+# ==========================================
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -76,6 +79,9 @@ spec:
     - port: 9090
       targetPort: 9090
 ---
+# ==========================================
+# 2. Configuration d'Alertmanager (Discord / Mail)
+# ==========================================
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -143,6 +149,9 @@ spec:
     - port: 9093
       targetPort: 9093
 ---
+# ==========================================
+# 3. Configuration de Grafana (Visualisation)
+# ==========================================
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -201,6 +210,9 @@ spec:
       targetPort: 3000
       nodePort: 32000
 ---
+# ==========================================
+# 4. Configuration de Node Exporter (Agent système)
+# ==========================================
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
