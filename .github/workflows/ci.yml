@@ -1,3 +1,4 @@
+# Pipeline CI/CD principal
 name: CI Pipeline
 
 on:
@@ -11,11 +12,14 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      # Récupération du code source
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Construction de l'image Docker du Backend
       - name: Build Backend
         run: docker build -t taskboard-backend:latest -f Dockerfile.backend .
 
+      # Construction de l'image Docker du Frontend
       - name: Build Frontend
         run: docker build -t taskboard-frontend:latest -f Dockerfile.frontend .
